@@ -2,6 +2,8 @@ library(dplyr)
 
 data <- read.csv("~/Documents/Spatial Biostats/bikeshare_data.csv")
 
+unique(data$from_station_id)
+
 
 # create dataset with counts or averages for each starting station
 summary_data <- data %>% 
@@ -14,6 +16,8 @@ summary_data <- data %>%
   group_by(from_station_id) %>% 
   summarise(trip_count = n(),
             capacity = first(from_station_dpcapacity),
+            longitude = first(from_station_longitude),
+            latitude = first(from_station_latitude),
             avg_duration = mean(tripduration),
             subscribers = sum(subscribed),
             customers = sum(customer),
