@@ -4,7 +4,6 @@ data <- read.csv("~/Documents/Spatial Biostats/bikeshare_data.csv")
 
 unique(data$from_station_id)
 
-
 # create dataset with counts or averages for each starting station
 summary_data <- data %>% 
   mutate(subscribed = ifelse(usertype == "Subscriber", 1, 0)) %>% 
