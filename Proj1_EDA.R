@@ -47,6 +47,7 @@ emp_vario_fit <- fit.variogram(emp_vario, model = vgm('Gau'))
 plot(emp_vario, emp_vario_fit)
 
 # I think the exponential looks best, wouldn't recommend increasing the cutoff
+#exponential is definitely best
 
 
 # the exponential covariance
@@ -94,13 +95,17 @@ model_code <- nimbleCode({
   
 })
 
+#subscriber count + customer count to proportions
+data$subscriber_prop <- data$subscribers/(data$subscribers + data$customers)
+
+#also analyzing gender as proportion
+data$male_prop <- data$male/(data$male + data$female)
+
 X <- cbind(1,
            data$trip_count,
            data$capacity,
-           data$subscribers,
-           data$customers,
-           data$male,
-           data$female,
+           data$subscriber_prop
+           data$male_prop
            data$avg_age)
 
 dist_mat <- as.matrix(dist(data[,c('longitude','latitude')], method = "manhattan"))
