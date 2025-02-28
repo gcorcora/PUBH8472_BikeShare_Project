@@ -90,7 +90,7 @@ model_code <- nimbleCode({
   tau2 ~ dinvgamma(2, 0.01)
   
   for (j in 1:p) {
-    beta[j] ~ dnorm(0, sd = 100)
+    beta[j] ~ dnorm(0, sd = 10) #changed sd to 10, helped with convergence
   }
   
 })
@@ -102,14 +102,23 @@ data$subscriber_prop <- data$subscribers/(data$subscribers + data$customers)
 data$male_prop <- data$male/(data$male + data$female)
 
 #I think I want to add trip distance too - because slightly longer durations might happen if the bikeshare station is full, so this kind of measures that
+#removed capacity because it was highly correlated with trip count
+
+#standardized predictors because that helped convergence
+data$trip_count_standard <- scale(data$trip_count)
+data$capacity_standard <- scale(data$capacity)
+data$subscriber_prop_standard <- scale(data$subscriber_prop)
+data$male_prop_standard <- scale(data$male_prop)
+data$avg_age_standard <- scale(data$avg_age)
+data$avg_trip_distance_standard <- scale(data$avg_trip_distance)
+
 
 X <- cbind(1,
-           data$trip_count,
-           data$capacity,
-           data$subscriber_prop,
-           data$male_prop,
-           data$avg_age,
-           data$avg_trip_distance
+           data$trip_count_standard,
+           data$subscriber_prop_standard,
+           data$male_prop_standard,
+           data$avg_age_standard,
+           data$avg_trip_distance_standard
           )
 
 dist_mat <- as.matrix(dist(data[,c('longitude','latitude')], method = "manhattan"))
@@ -135,8 +144,8 @@ MCMC1 <- buildMCMC(config1)
 compiled1 <- compileNimble(model1, MCMC1)
 
 model_out1 <- runMCMC(compiled1$MCMC1,
-                      nburnin = 10000,
-                      niter = 50000,
+                      nburnin = 50000,
+                      niter = 200000,
                       nchains = 3,
                       samplesAsCodaMCMC = TRUE,
                       WAIC = TRUE)
@@ -144,7 +153,7 @@ model_out1 <- runMCMC(compiled1$MCMC1,
 #updating betas
 plot(model_out1$samples[,c('beta[1]', 'phi', 'sigma2', 'tau2')], density = F)
 plot(model_out1$samples[,c('beta[2]', 'beta[3]', 'beta[4]', 'beta[5]')], density = F)
-plot(model_out1$samples[,c('beta[6]', 'beta[7]')], density = F)
+plot(model_out1$samples[,c('beta[6]')], density = F)
 summary(model_out1$samples[,c('beta[1]',
                               'phi',
                               'sigma2',
@@ -153,8 +162,7 @@ summary(model_out1$samples[,c('beta[1]',
                               'beta[3]',
                               'beta[4]',
                               'beta[5]',
-                              'beta[6]',
-                              'beta[7]')])
+                              'beta[6]')])
 
 samples_array <- as.array(model_out1$samples)
 post_means <- colMeans(samples_array)
