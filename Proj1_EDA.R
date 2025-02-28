@@ -141,9 +141,10 @@ model_out1 <- runMCMC(compiled1$MCMC1,
                       samplesAsCodaMCMC = TRUE,
                       WAIC = TRUE)
 
+#updating betas
 plot(model_out1$samples[,c('beta[1]', 'phi', 'sigma2', 'tau2')], density = F)
 plot(model_out1$samples[,c('beta[2]', 'beta[3]', 'beta[4]', 'beta[5]')], density = F)
-plot(model_out1$samples[,c('beta[6]', 'beta[7]', 'beta[8]')], density = F)
+plot(model_out1$samples[,c('beta[6]', 'beta[7]')], density = F)
 summary(model_out1$samples[,c('beta[1]',
                               'phi',
                               'sigma2',
@@ -153,8 +154,7 @@ summary(model_out1$samples[,c('beta[1]',
                               'beta[4]',
                               'beta[5]',
                               'beta[6]',
-                              'beta[7]',
-                              'beta[8]')])
+                              'beta[7]')])
 
 samples_array <- as.array(model_out1$samples)
 post_means <- colMeans(samples_array)
