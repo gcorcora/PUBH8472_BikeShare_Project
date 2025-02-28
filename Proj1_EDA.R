@@ -101,12 +101,16 @@ data$subscriber_prop <- data$subscribers/(data$subscribers + data$customers)
 #also analyzing gender as proportion
 data$male_prop <- data$male/(data$male + data$female)
 
+#I think I want to add trip distance too - because slightly longer durations might happen if the bikeshare station is full, so this kind of measures that
+
 X <- cbind(1,
            data$trip_count,
            data$capacity,
-           data$subscriber_prop
-           data$male_prop
-           data$avg_age)
+           data$subscriber_prop,
+           data$male_prop,
+           data$avg_age,
+           data$avg_trip_distance
+          )
 
 dist_mat <- as.matrix(dist(data[,c('longitude','latitude')], method = "manhattan"))
 
