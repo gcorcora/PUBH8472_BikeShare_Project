@@ -28,6 +28,8 @@ Files for Project 1 by Ting-Chien Huang and Gretchen Corcoran:
      
   5. Supplementary files:
      
-       Two maps made with QGIS to show the bike stations in their real locations"
+       Two maps made with QGIS to show the bike stations in their real locations:
+     
          qgis_map_fix_with_outlier.png
+     
          qgis_map_without_outlier.png
